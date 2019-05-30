@@ -1,4 +1,4 @@
-# Raw data
+# RNA <sup>13</sup>C' chemical shifts databases
 
 This repository contains the experimental and theoretical databases used for RNA backbone rotamers classification using 13C' chemical shifts. 
 
