@@ -1,6 +1,6 @@
 # Raw data
 
-This public repository contains the experimental and theoretical databases used for RNA backbone rotamers classification using 13C' chemical shifts. 
+This repository contains the experimental and theoretical databases used for RNA backbone rotamers classification using 13C' chemical shifts. 
 
 Two documents were uploaded:
 
