@@ -1,0 +1,7 @@
+name: rotamers
+dependencies:
+  - python=3.6.9
+  - scikit-learn=0.19
+  - jupyter=1.0.0
+  - numpy=1.15.4
+  - pandas=0.25.0
