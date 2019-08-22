@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 
-from sklearn import preprocessing
-
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_recall_fscore_support
 
@@ -69,8 +67,6 @@ for ml_clf in ML_CLFS:
                 
                 # define a ROSUM matrix for the corresponding labels set
                 b_matrix = pd.read_csv('files/b_matrix_{}.csv'.format(ls))
-                le = preprocessing.LabelEncoder()
-                le.fit(theo_seq_subset[ls])
                 
                 # define training and test label sets (i.e. rotamers or rotamer families)
                 y_train = theo_seq_subset[ls]
@@ -92,15 +88,11 @@ for ml_clf in ML_CLFS:
                     true_dict[clf_name].extend(list(y_test))
                     pred_dict[clf_name].extend(list(y_pred))
 
-                    # define empty list for test-set label-assignment weights obtained from ROSUM matrices
-                    w_test = []
-
                     # iterate over test and predicted label sets to obtain their label-assignment weights
                     for y_true_i,y_pred_j in zip(y_test,y_pred):
                         
                         # define label-assignment weight from ROSUM matrices
                         weight = float(b_matrix[(b_matrix['ROT_i'] == y_true_i) & (b_matrix['ROT_j'] == y_pred_j)]['a_ij'])
-                        w_test.append(weight)
 
                         # define always true weighted accuracy: hypothetical case where all the labels are 
                         # correctly classified

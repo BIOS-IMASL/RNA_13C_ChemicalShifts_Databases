@@ -76,11 +76,8 @@ for ml_clf in ML_CLFS:
                 true_dict[clf_name].append(y_test)
                 pred_dict[clf_name].append(y_pred)
 
-                w_test = []
-
                 # define label assignment weight from ROSUM matrices
                 weight = float(b_matrix[(b_matrix['ROT_i'] == y_test) & (b_matrix['ROT_j'] == y_pred)]['a_ij'])
-                w_test.append(weight)
 
                 # define always true weighted accuracy: hypothetical case where all the labels are 
                 # correctly classified
