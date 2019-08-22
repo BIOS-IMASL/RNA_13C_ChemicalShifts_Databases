@@ -4,35 +4,34 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_recall_fscore_support
 
-from .utils import ml_classifier, common_lists
+from utils import ml_classifier, common_lists
 
-experimental_data = pd.read_csv('files/ExperimentalDatabaseModel01.csv')
+EXPERIMENTAL_DATA = pd.read_csv('files/ExperimentalDatabaseModel01.csv')
 
-features, labels_sets, seq_list, ml_clfs = common_lists(common_lists)
+FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists()
 
 # iterate over the classification models
-for ml_clf in ml_clfs[:]:
-    
+for ml_clf in ML_CLFS:
     # define an empty dataframe to save final results for each classification model
     df_final = pd.DataFrame()
-    
+
     # define the parameterized classifiers names and the corresponding scikit-learn models
     classifiers_names, classifiers = ml_classifier(ml_clf)
-    
+
     # create numpy arrays filled with ones to temporarily save performance measure results
-    results_accuracy = -np.ones((len(classifiers), len(labels_sets)))
-    results_weighted_accuracy = -np.ones((len(classifiers), len(labels_sets))) 
-    results_precision = -np.ones((len(classifiers), len(labels_sets))) 
-    results_recall = -np.ones((len(classifiers), len(labels_sets))) 
-    results_f1_score = -np.ones((len(classifiers), len(labels_sets)))
+    results_accuracy = -np.ones((len(classifiers), len(LABELS_SETS)))
+    results_weighted_accuracy = -np.ones((len(classifiers), len(LABELS_SETS)))
+    results_precision = -np.ones((len(classifiers), len(LABELS_SETS)))
+    results_recall = -np.ones((len(classifiers), len(LABELS_SETS)))
+    results_f1_score = -np.ones((len(classifiers), len(LABELS_SETS)))
 
     # iterate over labels sets (i.e. rotamers or rotamer families)
-    for ls_cnt, ls in enumerate(labels_sets[:]):
+    for ls_cnt, ls in enumerate(LABELS_SETS):
 
         # define ROSUM matrix for the corresponding labels set
-        b_matrix = pd.read_csv('files/b_matrix_{}.csv'.format(ls)) 
-        
-        # define lists to save true and predicted labels 
+        b_matrix = pd.read_csv('files/b_matrix_{}.csv'.format(ls))
+
+        # define lists to save true and predicted labels
         always_true = [] 
         true_pos = []
         true_list = []
@@ -45,41 +44,34 @@ for ml_clf in ml_clfs[:]:
         true_pos_dict = {cln: [] for cln in classifiers_names}
 
         # define the training and test sets with a leave-one-out approach
-        for rmv in range(len(experimental_data[:])):
+        for rmv in range(len(EXPERIMENTAL_DATA)):
             
             # define the test-set
-            test_set = experimental_data.loc[rmv]
+            test_set = EXPERIMENTAL_DATA.loc[rmv]
 
             # define the training set
-            train_set = experimental_data.drop(experimental_data.index[[rmv]])
+            train_set = EXPERIMENTAL_DATA.drop(EXPERIMENTAL_DATA.index[[rmv]])
 
             # define a training set with the same dinucleotide sequence as the test-set
             train_set_seq = train_set[train_set.SEQ == test_set.SEQ]
 
-            X_train = train_set_seq[features]
-            X_test = pd.DataFrame(test_set[features]).T 
+            X_train = train_set_seq[FEATURES]
+            X_test = pd.DataFrame(test_set[FEATURES]).T
             
             y_train = train_set_seq[ls]
             y_test = test_set[ls]
 
             # iterate over the parameterized classifiers
-            for idx, clf in enumerate(classifiers[:]):
+            for idx, clf in enumerate(classifiers):
                 
                 # define classifier name
                 clf_name = classifiers_names[idx]
 
-                if clf != 'Random Guess':
+                # fit classifier model with train set feautures an labels
+                clf.fit(X_train, y_train)
 
-                   # fit classifier model with train set feautures an labels
-                    clf.fit(X_train, y_train)
-
-                    # define predicted label (rotamer or rotamer family)
-                    y_pred = (clf.predict(X_test))[0]
-
-                if clf == 'Random Guess':
-
-                    # define predicted label (rotamer or rotamer family)
-                    y_pred = np.random.choice(np.unique(y_train), size=1)[0]
+                # define predicted label (rotamer or rotamer family)
+                y_pred = (clf.predict(X_test))[0]
 
                 true_dict[clf_name].append(y_test)
                 pred_dict[clf_name].append(y_pred)
@@ -102,7 +94,7 @@ for ml_clf in ml_clfs[:]:
                     true_pos_dict[clf_name].append(weight)
         
         # iterate over the classifiers names to compute and temporarily save performance measures
-        for idx,clf_name in enumerate(classifiers_names):
+        for idx, clf_name in enumerate(classifiers_names):
             
             # define list with true labels for the corresponding classifier
             true_list = true_dict[clf_name]
@@ -135,7 +127,7 @@ for ml_clf in ml_clfs[:]:
         
         # define a DataFrame with partial results
         df_partial = pd.DataFrame({'02_ClassifierName': classifiers_names[n],
-                         '03_Groups': labels_sets, 
+                         '03_Groups': LABELS_SETS,
                          '04_Accuracy': results_accuracy[n],
                          '05_W_Accuracy': results_weighted_accuracy[n],
                          '06_precision': results_precision[n],

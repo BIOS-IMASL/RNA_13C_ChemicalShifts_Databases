@@ -1,36 +1,32 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import scipy as sp
 
 from sklearn import preprocessing
-from sklearn.preprocessing import OneHotEncoder
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_recall_fscore_support
 
-from .utils import ml_classifier, common_lists
+from utils import ml_classifier, common_lists
 
-experimental_data = pd.read_csv('files/ExperimentalDatabaseModel01.csv')
+EXPERIMENTAL_DATA = pd.read_csv('files/ExperimentalDatabaseModel01.csv')
 
-teo_files = ['files/data_teo_corrected_simple.csv',
+TEO_FILES = ['files/data_teo_corrected_simple.csv',
          'files/data_teo_corrected_bycmean.csv',
          'files/data_teo_corrected_bycopt.csv',
          'files/data_teo_corrected_byseq.csv',
          'files/data_teo_corrected_bypucker.csv']
-n_refs = [0,1,2,3,4]
-ref_types = ['Simple', 'C_mean', 'C_opt','Sequence', 'Puckering']
+N_REFS = [0,1,2,3,4]
+REF_TYPES = ['Simple', 'C_mean', 'C_opt','Sequence', 'Puckering']
 
-features, labels_sets, seq_list, ml_clfs = common_lists(common_lists)
+FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists()
 
 # iterate over the classification models
-for ml_clf in ml_clfs[:]:
-    
+for ml_clf in ML_CLFS:
     # define an empty dataframe to save final results for each classification model
     df_final = pd.DataFrame()
-    
+
     # iterate over the files with theoretical chemical shifts and the corresponding chemical shift references
-    for teo_file,n_ref in zip(teo_files[:],n_refs[:]): 
+    for teo_file,n_ref in zip(TEO_FILES, N_REFS):
         
         # define theoretical dataset
         theoretical_data = pd.read_csv(teo_file)
@@ -39,14 +35,14 @@ for ml_clf in ml_clfs[:]:
         classifiers_names, classifiers = ml_classifier(ml_clf)
 
         # create numpy arrays filled with ones to temporarily save performance measure results
-        results_accuracy = -np.ones((len(classifiers), len(labels_sets)))
-        results_weighted_accuracy = -np.ones((len(classifiers), len(labels_sets)))
-        results_precision = -np.ones((len(classifiers), len(labels_sets)))
-        results_recall = -np.ones((len(classifiers), len(labels_sets)))
-        results_f1_score = -np.ones((len(classifiers), len(labels_sets)))
+        results_accuracy = -np.ones((len(classifiers), len(LABELS_SETS)))
+        results_weighted_accuracy = -np.ones((len(classifiers), len(LABELS_SETS)))
+        results_precision = -np.ones((len(classifiers), len(LABELS_SETS)))
+        results_recall = -np.ones((len(classifiers), len(LABELS_SETS)))
+        results_f1_score = -np.ones((len(classifiers), len(LABELS_SETS)))
 
         # iterate over labels sets (i.e. rotamers or rotamer families)
-        for ls_cnt, ls in enumerate(labels_sets[:]):
+        for ls_cnt, ls in enumerate(LABELS_SETS):
             
             # define lists to save true and predicted labels 
             always_true = []
@@ -61,15 +57,15 @@ for ml_clf in ml_clfs[:]:
             true_pos_dict = {cln: [] for cln in classifiers_names}
             
             # iterate over dinuceotide sequences
-            for seq in seq_list[:]:
+            for seq in SEQ_LIST:
                 
                 # define dinucleotide-sequence subsets
                 theo_seq_subset = theoretical_data[theoretical_data.SEQ == seq]
-                exp_seq_subset = experimental_data[experimental_data.SEQ == seq]
+                exp_seq_subset = EXPERIMENTAL_DATA[EXPERIMENTAL_DATA.SEQ == seq]
                 
                 # define training and test sets with features (i.e. 13C' chemical shifts)
-                X_train = theo_seq_subset[features]
-                X_test = exp_seq_subset[features]
+                X_train = theo_seq_subset[FEATURES]
+                X_test = exp_seq_subset[FEATURES]
                 
                 # define a ROSUM matrix for the corresponding labels set
                 b_matrix = pd.read_csv('files/b_matrix_{}.csv'.format(ls))
@@ -81,23 +77,16 @@ for ml_clf in ml_clfs[:]:
                 y_test = exp_seq_subset[ls]
                 
                 # iterate over the paremeterized classifiers          
-                for idx, clf in enumerate(classifiers[:]):
+                for idx, clf in enumerate(classifiers):
 
                     # define classifier name
                     clf_name = classifiers_names[idx]
-                   
-                    if clf != 'Random Guess':
-                        
-                       # fit classifier model with train set feautures an labels
-                        clf.fit(X_train, y_train)
-
-                        # define predicted label (rotamer or rotamer family)
-                        y_pred = clf.predict(X_test)
                     
-                    if clf == 'Random Guess':
-                        
-                        # define predicted label (rotamer or rotamer family)
-                        y_pred = np.random.choice(np.unique(y_train), size=y_test.size)
+                    # fit classifier model with train set feautures an labels
+                    clf.fit(X_train, y_train)
+
+                    # define predicted label (rotamer or rotamer family)
+                    y_pred = clf.predict(X_test)
                     
                     # extend the true and predicted label dictionaries
                     true_dict[clf_name].extend(list(y_test))
@@ -157,9 +146,9 @@ for ml_clf in ml_clfs[:]:
         for n in range(len(results_accuracy)):
             
             # define a DataFrame with partial results
-            df_partial = pd.DataFrame({'01_RefType': [ref_types[n_ref] for i in labels_sets],
+            df_partial = pd.DataFrame({'01_RefType': [REF_TYPES[n_ref] for i in LABELS_SETS],
                              '02_ClassifierName': classifiers_names[n],
-                             '03_Groups': labels_sets, 
+                             '03_Groups': LABELS_SETS,
                              '04_Accuracy': results_accuracy[n],
                              '05_W_Accuracy': results_weighted_accuracy[n],
                              '06_precision': results_precision[n],
