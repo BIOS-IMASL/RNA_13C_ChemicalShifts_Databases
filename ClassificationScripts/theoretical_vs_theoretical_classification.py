@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_recall_fscore_support
 
-from .utils import ml_classifier, common_lists
+from utils import ml_classifier, common_lists
 
 theoretical_data = pd.read_csv('files/data_teo_corrected_simple.csv')
 
@@ -68,19 +68,12 @@ for ml_clf in ml_clfs[:]:
                 # define classifier name
                 clf_name = classifiers_names[idx]
 
-                if clf != 'Random Guess':
+                # fit classifier model with train set feautures an labels
+                clf.fit(X_train, y_train)
 
-                   # fit classifier model with train set feautures an labels
-                    clf.fit(X_train, y_train)
-
-                    # define predicted label (rotamer or rotamer family)
-                    y_pred = (clf.predict(X_test))[0]
-
-                if clf == 'Random Guess':
-
-                    # define predicted label (rotamer or rotamer family)
-                    y_pred = np.random.choice(np.unique(y_train), size=1)[0]
-            
+                # define predicted label (rotamer or rotamer family)
+                y_pred = (clf.predict(X_test))[0]
+           
                 true_dict[clf_name].append(y_test)
                 pred_dict[clf_name].append(y_pred)
 

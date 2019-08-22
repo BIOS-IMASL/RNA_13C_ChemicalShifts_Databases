@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy as sp
 
 from sklearn import preprocessing
@@ -9,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_recall_fscore_support
 
-from .utils import ml_classifier, common_lists
+from utils import ml_classifier, common_lists
 
 experimental_data = pd.read_csv('files/ExperimentalDatabaseModel01.csv')
 
@@ -85,19 +84,12 @@ for ml_clf in ml_clfs[:]:
 
                     # define classifier name
                     clf_name = classifiers_names[idx]
-                   
-                    if clf != 'Random Guess':
-                        
-                       # fit classifier model with train set feautures an labels
-                        clf.fit(X_train, y_train)
-
-                        # define predicted label (rotamer or rotamer family)
-                        y_pred = clf.predict(X_test)
                     
-                    if clf == 'Random Guess':
-                        
-                        # define predicted label (rotamer or rotamer family)
-                        y_pred = np.random.choice(np.unique(y_train), size=y_test.size)
+                    # fit classifier model with train set feautures an labels
+                    clf.fit(X_train, y_train)
+
+                    # define predicted label (rotamer or rotamer family)
+                    y_pred = clf.predict(X_test)
                     
                     # extend the true and predicted label dictionaries
                     true_dict[clf_name].extend(list(y_test))
