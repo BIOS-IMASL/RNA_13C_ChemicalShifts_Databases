@@ -8,7 +8,7 @@ from utils import ml_classifier, common_lists
 
 THEORETICAL_DATA = pd.read_csv('files/data_teo_corrected_simple.csv')
 
-FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists(common_lists)
+FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists()
 
 # iterate over the classification models
 for ml_clf in ML_CLFS:

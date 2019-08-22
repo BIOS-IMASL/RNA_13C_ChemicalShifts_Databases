@@ -20,7 +20,7 @@ TEO_FILES = ['files/data_teo_corrected_simple.csv',
 N_REFS = [0,1,2,3,4]
 REF_TYPES = ['Simple', 'C_mean', 'C_opt','Sequence', 'Puckering']
 
-FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists(common_lists)
+FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists()
 
 # iterate over the classification models
 for ml_clf in ML_CLFS:

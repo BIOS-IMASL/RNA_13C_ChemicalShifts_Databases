@@ -8,7 +8,7 @@ from utils import ml_classifier, common_lists
 
 EXPERIMENTAL_DATA = pd.read_csv('files/ExperimentalDatabaseModel01.csv')
 
-FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists(common_lists)
+FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists()
 
 # iterate over the classification models
 for ml_clf in ML_CLFS:

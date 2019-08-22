@@ -40,17 +40,13 @@ class RandomGuess:
         return np.random.choice(self.unique_labels, size=X.shape[0])
 
 
-def common_lists(common_lists):
+def common_lists():
     """
     Returns a group of lists common to the three classification scripts
         features : list with the features names, i.e. 13C' CS
         labels_sets : list with the labels sets names, i.e. rotamer o families of rotamers
         seq_list : list with the 16 combinations of RNA dinucleotide sequences
         ml_clfs : list with the 6 classifier model abreviated names
-    
-    Parameters
-    ---------- 
-    common_lists : str
     """    
     features = ["C1'(i-1)_CS","C2'(i-1)_CS","C3'(i-1)_CS","C4'(i-1)_CS","C5'(i-1)_CS",
             "C1'(i)_CS","C2'(i)_CS","C3'(i)_CS","C4'(i)_CS","C5'(i)_CS"]
