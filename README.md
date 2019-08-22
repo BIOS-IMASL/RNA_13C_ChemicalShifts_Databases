@@ -1,4 +1,4 @@
-# Classification of RNA backbone conformations into rotamers using 13C' chemical shifts: datasets, raw data and classification scripts.
+# Classification of RNA backbone conformations into rotamers using 13C' chemical shifts: How far we can go?. Datasets, raw data and classification scripts.
 
 ## This repository contains the following elements: 
 
