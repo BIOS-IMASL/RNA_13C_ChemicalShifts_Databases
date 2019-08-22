@@ -91,7 +91,7 @@ def ml_classifier(ml_clf):
             KNeighborsClassifier(4),
             KNeighborsClassifier(5)]
     
-    if ml_clf == 'DT':
+    elif ml_clf == 'DT':
         from sklearn.tree import DecisionTreeClassifier
         
         classifiers_names = ["DT gini 20", "DT gini all", "DT entropy 20", "DT entropy all"]
@@ -102,7 +102,7 @@ def ml_classifier(ml_clf):
             DecisionTreeClassifier(criterion='entropy', max_depth=20),
             DecisionTreeClassifier(criterion='entropy', max_depth=None)]
 
-    if ml_clf == 'RF':
+    elif ml_clf == 'RF':
         from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
         
         classifiers_names = ["RF gini 20 1", "RF gini 20 auto", "RF entropy 20 1", "RF entropy 20 auto"]
@@ -113,7 +113,7 @@ def ml_classifier(ml_clf):
             RandomForestClassifier(criterion='entropy', max_depth=20, n_estimators=10, max_features=1),
             RandomForestClassifier(criterion='entropy', max_depth=20, n_estimators=10, max_features='auto')]
     
-    if ml_clf == 'MLP':
+    elif ml_clf == 'MLP':
         from sklearn.neural_network import MLPClassifier
         
         classifiers_names = ["MLP 0.0001 500 lbfgs", "MLP 0.0001 500 sgd", "MLP 0.0001 500 adam", 
@@ -127,7 +127,7 @@ def ml_classifier(ml_clf):
             MLPClassifier(alpha=0.0001, max_iter=750, solver='sgd'),
             MLPClassifier(alpha=0.0001, max_iter=1000, solver='sgd')]
     
-    if ml_clf == 'SVM':
+    elif ml_clf == 'SVM':
         from sklearn.svm import SVC
         from sklearn.gaussian_process import GaussianProcessClassifier
         from sklearn.gaussian_process.kernels import RBF
@@ -146,7 +146,7 @@ def ml_classifier(ml_clf):
             SVC(kernel="rbf", C=1.0),
             SVC(kernel="rbf", C=2.0)]
     
-    if ml_clf == 'RAND':
+    elif ml_clf == 'RAND':
         classifiers_names, classifiers = (['Random Guess'],[RandomGuess()])
                 
     return(classifiers_names, classifiers)

@@ -6,13 +6,12 @@ from sklearn.metrics import precision_recall_fscore_support
 
 from utils import ml_classifier, common_lists
 
-theoretical_data = pd.read_csv('files/data_teo_corrected_simple.csv')
+THEORETICAL_DATA = pd.read_csv('files/data_teo_corrected_simple.csv')
 
-features, labels_sets, seq_list, ml_clfs = common_lists(common_lists)
+FEATURES, LABELS_SETS, SEQ_LIST, ML_CLFS = common_lists(common_lists)
 
 # iterate over the classification models
-for ml_clf in ml_clfs[:]:
-    
+for ml_clf in ML_CLFS:
     # define an empty dataframe to save final results for each classification model
     df_final = pd.DataFrame()
 
@@ -20,14 +19,14 @@ for ml_clf in ml_clfs[:]:
     classifiers_names, classifiers = ml_classifier(ml_clf)
 
     # create numpy arrays filled with ones to temporarily save performance measure results
-    results_accuracy = -np.ones((len(classifiers), len(labels_sets)))
-    results_weighted_accuracy = -np.ones((len(classifiers), len(labels_sets))) 
-    results_precision = -np.ones((len(classifiers), len(labels_sets)))
-    results_recall = -np.ones((len(classifiers), len(labels_sets)))
-    results_f1_score = -np.ones((len(classifiers), len(labels_sets)))
+    results_accuracy = -np.ones((len(classifiers), len(LABELS_SETS)))
+    results_weighted_accuracy = -np.ones((len(classifiers), len(LABELS_SETS)))
+    results_precision = -np.ones((len(classifiers), len(LABELS_SETS)))
+    results_recall = -np.ones((len(classifiers), len(LABELS_SETS)))
+    results_f1_score = -np.ones((len(classifiers), len(LABELS_SETS)))
 
     # iterate over labels sets (i.e. rotamers or rotamer families)
-    for ls_cnt, ls in enumerate(labels_sets[:]):
+    for ls_cnt, ls in enumerate(LABELS_SETS):
 
         # define ROSUM matrix for the corresponding labels set
         b_matrix = pd.read_csv('files/b_matrix_{}.csv'.format(ls)) 
@@ -45,25 +44,25 @@ for ml_clf in ml_clfs[:]:
         true_pos_dict = {cln: [] for cln in classifiers_names}
 
         # define the training and test sets with a leave-one-out approach
-        for rmv in range(len(theoretical_data[:])):
+        for rmv in range(len(THEORETICAL_DATA)):
             
             # define the test-set
-            test_set = theoretical_data.loc[rmv]
+            test_set = THEORETICAL_DATA.loc[rmv]
 
             # define the training set
-            train_set = theoretical_data.drop(theoretical_data.index[[rmv]])
+            train_set = THEORETICAL_DATA.drop(THEORETICAL_DATA.index[[rmv]])
 
             # define a training set with the same dinucleotide sequence as the test-set
             train_set_seq = train_set[train_set.SEQ == test_set.SEQ]
 
-            X_train = train_set_seq[features]
-            X_test = pd.DataFrame(test_set[features]).T
+            X_train = train_set_seq[FEATURES]
+            X_test = pd.DataFrame(test_set[FEATURES]).T
 
             y_train = train_set_seq[ls]
             y_test = test_set[ls]
 
             # iterate over the parameterized classifiers
-            for idx, clf in enumerate(classifiers[:]):
+            for idx, clf in enumerate(classifiers):
                 
                 # define classifier name
                 clf_name = classifiers_names[idx]
@@ -127,7 +126,7 @@ for ml_clf in ml_clfs[:]:
         
         # define a DataFrame with partial results
         df_partial = pd.DataFrame({'02_ClassifierName': classifiers_names[n],
-                         '03_Groups': labels_sets, 
+                         '03_Groups': LABELS_SETS,
                          '04_Accuracy': results_accuracy[n],
                          '05_W_Accuracy': results_weighted_accuracy[n],
                          '06_precision': results_precision[n],
